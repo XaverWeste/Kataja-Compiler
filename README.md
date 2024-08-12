@@ -2,7 +2,7 @@
 Compiler for Kataja Programming Language
 
 ## How to use
-First Download the latest Version ([here](https://github.com/XaverWeste/Kataja-Compiler/tree/master/releases)) and run the jar ````java -jar KatajaCompiler-0.9.0.jar````. The Compiler starts a command prompt and waits for arguments.
+First Download the latest Version ([here](https://github.com/KatajaLanguage/Compiler/tree/master/releases)) and run the jar ````java -jar KatajaCompiler-0.9.0.jar````. The Compiler starts a command prompt and waits for arguments.
 
 Every Argument has to be a combination of the arguments described below (Note that the order of arguments is fixed, in the Order of the list below, every argument is optional).
 
