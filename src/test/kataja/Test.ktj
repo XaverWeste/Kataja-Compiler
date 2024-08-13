@@ -1,4 +1,10 @@
-main -> _oa = Object[] args
+use java/util/ArrayList
+
+main{
+    _list = ArrayList<String[]>()
+    list.add({"test"})
+    _s = list.get(0)
+}
 
 # -q -d -c src/test/kataja/Test.ktj -e src/test/kataja/Test.ktj
 # -q -dc out/src/test/kataja/Test.class

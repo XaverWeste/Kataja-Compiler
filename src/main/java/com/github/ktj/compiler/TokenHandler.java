@@ -159,6 +159,46 @@ final class TokenHandler{
         i = Integer.parseInt(s[1]);
     }
 
+    public String getInBracket(){
+        String openingBracket = current().s;
+        String closingBracket;
+        switch(openingBracket){
+            case "(":
+                closingBracket = ")";
+                break;
+            case "[":
+                closingBracket = "]";
+                break;
+            case "{":
+                closingBracket = "}";
+                break;
+            case "<":
+                closingBracket = ">";
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        StringBuilder sb = new StringBuilder();
+
+        int line = getLine();
+        int b = 1;
+
+        while(b > 0 && hasNext()){
+            next();
+            while(getLine() != line){
+                line++;
+                sb.append("\n");
+            }
+            if(current().equals(openingBracket)) b++;
+            else if(current().equals(closingBracket)) b--;
+            if(b > 0) sb.append(current()).append(" ");
+        }
+
+        if(b > 0) err("Expected "+closingBracket);
+
+        return sb.toString();
+    }
+
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();

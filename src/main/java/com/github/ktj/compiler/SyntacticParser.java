@@ -745,7 +745,13 @@ final class SyntacticParser {
                 }else type = null;
             }
 
+            String index2 = th.getIndex();
+            if(th.isNext("<")) th.getInBracket();
+
+            if(th.isNext("(")) type = null;
+
             if(type != null) {
+                th.setIndex(index2);
                 AST.Cast ast = new AST.Cast();
 
                 ast.cast = type;

@@ -166,7 +166,7 @@ final class Parser {
 
         Modifier mod = new Modifier(AccessFlag.ACC_PUBLIC);
         mod.statik = true;
-        addMethod("main%[String", new KtjMethod(mod, null, "void", getInBracket(), new KtjMethod.Parameter[]{new KtjMethod.Parameter(false, "[String", "args")}, uses, statics, getFileName(), _line));
+        addMethod("main%[String", new KtjMethod(mod, null, "void", th.getInBracket(), new KtjMethod.Parameter[]{new KtjMethod.Parameter(false, "[String", "args")}, uses, statics, getFileName(), _line));
     }
 
     private void parseModifier(String clazzName){
@@ -444,7 +444,7 @@ final class Parser {
         String name = th.assertToken(Token.Type.IDENTIFIER, Token.Type.OPERATOR, "[", "(").s;
 
         if(name.equals("<")){
-            getInBracket();
+            th.getInBracket();
             name = th.assertToken(Token.Type.IDENTIFIER, Token.Type.OPERATOR, "[").s;
         }
 
@@ -549,7 +549,7 @@ final class Parser {
                 if(!name.equals("<init>")) err("illegal argument");
                 superConstructorCall.append(th.assertTokenTypes(Token.Type.IDENTIFIER)).append("(");
                 th.assertToken("(");
-                superConstructorCall.append(getInBracket()).append(")");
+                superConstructorCall.append(th.getInBracket()).append(")");
             }else th.last();
         }
 
@@ -559,7 +559,7 @@ final class Parser {
             addMethod(desc.toString(), new KtjMethod(mod, current != null ? current.genericTypes : null, type, null, parameter.toArray(new KtjMethod.Parameter[0]), uses, statics, getFileName(), th.getLine()));
         }else if(th.isNext("{")){
             int _line = th.getLine();
-            String code = getInBracket();
+            String code = th.getInBracket();
 
             if(name.contains("<init>")) addMethod(desc.toString(), new KtjConstructor(mod, current != null ? current.genericTypes : null, type, superConstructorCall.toString(), code, parameter.toArray(new KtjMethod.Parameter[0]), uses, statics, getFileName(), _line));
             else addMethod(desc.toString(), new KtjMethod(mod, current != null ? current.genericTypes : null, type, code, parameter.toArray(new KtjMethod.Parameter[0]), uses, statics, getFileName(), _line));
@@ -578,7 +578,7 @@ final class Parser {
                         if (!arg.toString().isEmpty()) arg.append("&&");
                         arg.append(value.name);
                         while (!th.isNext(",")){
-                            if (th.isNext("(")) arg.append(getInBracket());
+                            if (th.isNext("(")) arg.append(th.getInBracket());
                             else arg.append(th.next().s);
                         }
                     }
@@ -605,7 +605,7 @@ final class Parser {
                         sb.append("\n");
                         break;
                     case "{":
-                        sb = new StringBuilder(getInBracket());
+                        sb = new StringBuilder(th.getInBracket());
                         break;
                 }
             }
@@ -646,46 +646,6 @@ final class Parser {
             if(!method.isAbstract()) err("expected abstract Method");
             if (((KtjInterface) current).addMethod(desc, method)) err("method is already defined");
         }
-    }
-
-    private String getInBracket(){
-        String openingBracket = th.current().s;
-        String closingBracket;
-        switch(openingBracket){
-            case "(":
-                closingBracket = ")";
-                break;
-            case "[":
-                closingBracket = "]";
-                break;
-            case "{":
-                closingBracket = "}";
-                break;
-            case "<":
-                closingBracket = ">";
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        StringBuilder sb = new StringBuilder();
-
-        int line = th.getLine();
-        int b = 1;
-
-        while(b > 0 && th.hasNext()){
-            th.next();
-            while(th.getLine() != line){
-                line++;
-                sb.append("\n");
-            }
-            if(th.current().equals(openingBracket)) b++;
-            else if(th.current().equals(closingBracket)) b--;
-            if(b > 0) sb.append(th.current()).append(" ");
-        }
-
-        if(b > 0) err("Expected "+closingBracket);
-
-        return sb.toString();
     }
 
     private String getFileName(){
